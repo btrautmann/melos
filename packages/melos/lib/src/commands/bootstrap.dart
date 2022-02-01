@@ -19,7 +19,7 @@ mixin _BootstrapMixin on _CleanMixin {
         //   'Running "$pubCommandForLogging" in workspace packages...',
         // );
         logger?.stdout(
-          'BRANDON',
+          'BRANDON2',
         );
         if (!utils.isCI && workspace.filteredPackages.keys.length > 20) {
           logger?.stdout(
@@ -33,7 +33,7 @@ mixin _BootstrapMixin on _CleanMixin {
 
         try {
           await for (final package in _runPubGet(workspace)) {
-            logger?.stdout('pub getting on ${package.name}');
+            logger?.stdout('pub get completed on ${package.name}');
             logger?.stdout(
               '''
   ${AnsiStyles.greenBright('✓')} ${AnsiStyles.bold(package.name)}
@@ -41,6 +41,7 @@ mixin _BootstrapMixin on _CleanMixin {
             );
           }
         } catch (err) {
+          logger?.stdout('Caught an error! $err');
           if (err is BootstrapException) {
             await _logPubGetFailed(err.package, err.process, workspace);
           }
@@ -154,6 +155,8 @@ mixin _BootstrapMixin on _CleanMixin {
         });
       }
 
+      logger?.stdout('Awaiting exit code on ${package.name}');
+
       final exitCode = await pubGet.process.exitCode;
 
       if (exitCode != 0) {
@@ -171,9 +174,11 @@ mixin _BootstrapMixin on _CleanMixin {
     final execArgs = package.isFlutterPackage
         ? ['flutter', ...pubGetArgs]
         : [if (utils.isPubSubcommand()) 'dart', ...pubGetArgs];
+    logger?.stdout('execArgs for ${package.name} are $execArgs');
     final executable = currentPlatform.isWindows ? 'cmd' : '/bin/sh';
     final pluginTemporaryPath =
         join(workspace.melosToolPath, package.pathRelativeToWorkspace);
+    logger?.stdout('pluginTemporaryPath is $pluginTemporaryPath');
     final process = await Process.start(
       executable,
       currentPlatform.isWindows ? ['/C', '%MELOS_SCRIPT%'] : [],
@@ -192,6 +197,7 @@ mixin _BootstrapMixin on _CleanMixin {
       process.stdin.writeln(r'exit $?');
     }
 
+    logger?.stdout('returning pub get process for ${package.name}');
     return _PubGet(
       args: execArgs,
       package: package,
