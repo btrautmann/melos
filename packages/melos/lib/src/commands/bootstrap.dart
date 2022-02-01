@@ -15,8 +15,11 @@ mixin _BootstrapMixin on _CleanMixin {
         logger?.stdout(AnsiStyles.yellow.bold('melos bootstrap'));
         logger?.stdout('   └> ${AnsiStyles.cyan.bold(workspace.path)}\n');
 
+        // logger?.stdout(
+        //   'Running "$pubCommandForLogging" in workspace packages...',
+        // );
         logger?.stdout(
-          'Running "$pubCommandForLogging" in workspace packages...',
+          'BRANDON',
         );
         if (!utils.isCI && workspace.filteredPackages.keys.length > 20) {
           logger?.stdout(
@@ -30,6 +33,7 @@ mixin _BootstrapMixin on _CleanMixin {
 
         try {
           await for (final package in _runPubGet(workspace)) {
+            logger?.stdout('pub getting on ${package.name}');
             logger?.stdout(
               '''
   ${AnsiStyles.greenBright('✓')} ${AnsiStyles.bold(package.name)}
@@ -75,6 +79,7 @@ mixin _BootstrapMixin on _CleanMixin {
     Process process,
     MelosWorkspace workspace,
   ) async {
+    logger?.stdout('_logPubGetFailed');
     var processStdOutString = utf8.decoder.convert(
       await process.stdout
           .reduce((previous, element) => [...previous, ...element]),

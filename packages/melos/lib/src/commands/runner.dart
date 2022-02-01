@@ -58,7 +58,7 @@ class Melos extends _Melos
   Melos({
     required this.config,
     Logger? logger,
-  }) : logger = logger ?? Logger.standard();
+  }) : logger = logger ?? Logger.verbose();
 
   @override
   final Logger? logger;
