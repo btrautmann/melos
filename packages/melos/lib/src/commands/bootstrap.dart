@@ -159,9 +159,12 @@ mixin _BootstrapMixin on _CleanMixin {
 
       final exitCode = await pubGet.process.exitCode;
 
+      logger?.stdout('exit code on ${package.name} is $exitCode');
+
       if (exitCode != 0) {
         throw BootstrapException._(package, pubGet.process);
       }
+      logger?.stdout('yielding the package ${package.name}');
       yield package;
     }
   }
