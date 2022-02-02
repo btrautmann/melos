@@ -155,6 +155,16 @@ mixin _BootstrapMixin on _CleanMixin {
         });
       }
 
+      pubGet.process.stdout.listen((event) {
+        final processStdOutString = utf8.decoder.convert(event);
+        logger?.stdout(processStdOutString);
+      });
+
+      pubGet.process.stderr.listen((event) {
+        final processStdOutString = utf8.decoder.convert(event);
+        logger?.stdout(processStdOutString);
+      });
+
       logger?.stdout('Awaiting exit code on ${package.name}');
 
       final exitCode = await pubGet.process.exitCode;
